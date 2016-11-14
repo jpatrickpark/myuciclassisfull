@@ -22,4 +22,4 @@ This app sends notification email using SendGrid whenever a course changes its s
 
 It saves the status of the requested courses in the database and compares with the school website every minute.
 
-The source is disclosed publicly on Github.
+The project is open-source on Github.
