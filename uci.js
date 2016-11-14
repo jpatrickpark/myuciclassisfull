@@ -1,4 +1,4 @@
-// JS code included in templates/uci.html/tmpl, in a separate file
+// JS code included in templates/uci.html/tmpl, in a separate file for readability
 
 $( function() {
     FULL = 0;
