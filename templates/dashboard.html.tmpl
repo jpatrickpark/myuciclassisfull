@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>apps.jpatrickpark</title>
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+  </head>
+
+    <nav class="navbar navbar-default">
+      <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/">apps.jpatrickpark</a>
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+          <ul class="nav navbar-nav">
+            <li><a href="/doc">Documentation</a></li>
+            <!--<li><a href="/help">Help</a></li>-->
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ .CurrentUser.Email }} <span class="caret"></span></a>
+
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="javascript:void(0)" data-toggle="modal" data-target="#user-settings-modal">User Settings</a></li>
+
+                <li class="divider"></li>
+
+                <li><a href="/logout">Logout</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+    </nav>
+
+    <!-- User Settings Modal -->
+    <div class="modal fade" id="user-settings-modal" tabindex="-1" role="dialog" aria-labelledby="user-settings-label" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="user-settings-label">User Settings</h4>
+          </div>
+
+          <form method="post" action="/users/{{ .CurrentUser.ID }}">
+
+            <div class="modal-body">
+              <input type="hidden" name="_method" value="put">
+
+              <div class="form-group">
+                <label class="control-label" for="email">Email:</label>
+                <input type="text" name="Email" id="email" class="form-control" value="{{ .CurrentUser.Email }}">
+              </div>
+
+              <div class="form-group">
+                <label class="control-label" for="password">New Password:</label>
+                <input type="password" name="Password" id="password" class="form-control">
+              </div>
+
+              <div class="form-group">
+                <label class="control-label" for="password-again">New Password Again:</label>
+                <input type="password" name="PasswordAgain" id="password-again" class="form-control">
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-success" onclick="$(this).closest('form').submit()">Save changes</button>
+            </div>
+
+          </form>
+
+        </div>
+      </div>
+    </div>
+
+    {{template "content" .}}
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
