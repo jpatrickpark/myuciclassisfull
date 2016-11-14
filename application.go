@@ -114,7 +114,6 @@ func (app *Application) mux() *gorilla_mux.Router {
 	router.Handle("/search-golang", MustLogin(http.HandlerFunc(handlers.GetHome))).Methods("GET")
 	router.Handle("/my-uci-class-is-full", MustLogin(http.HandlerFunc(handlers.GetUciClass))).Methods("GET")
 	router.Handle("/whiteboard", MustLogin(http.HandlerFunc(handlers.GetWhiteboardHome))).Methods("GET")
-	//router.HandleFunc("/", handlers.GetHome).Methods("GET")
 
 	router.HandleFunc("/signup", handlers.GetSignup).Methods("GET")
 	router.HandleFunc("/signup", handlers.PostSignup).Methods("POST")
@@ -124,9 +123,6 @@ func (app *Application) mux() *gorilla_mux.Router {
 	router.HandleFunc("/search-golang/intersectRepo", handlers.PostIntersectRepo).Methods("Post")
 	router.HandleFunc("/search-golang/intersectHuman", handlers.PostIntersectHuman).Methods("Post")
 	router.HandleFunc("/search-golang/search", handlers.GetSearch).Methods("GET")
-	//router.HandleFunc("/newpage", handlers.PostPage).Methods("POST")
-	//router.HandleFunc("/pages", handlers.GetPages).Methods("GET")
-	//router.HandleFunc("/{noteid}", handlers.GetHome)).Methods("GET", "DELETE")
 
 	router.Handle("/my-uci-class-is-full/term/{quarter}", MustLogin(http.HandlerFunc(handlers.PutTerm))).Methods("PUT")
 	router.Handle("/my-uci-class-is-full/term/{quarter}/{courseCode}", MustLogin(http.HandlerFunc(handlers.DeleteTerm))).Methods("DELETE")
