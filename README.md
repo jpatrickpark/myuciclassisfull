@@ -11,13 +11,15 @@ PUT	|/term/{quarter}	|Puts a course to the user area designated for the given te
 DELETE	|/term/{quarter}/{courseCode}	|Deletes user request for the given course of the given quarter.
 GET	|/	|Gets the html document with user information included.
 GET	|/term/{quarter}	|Gets the html document for the given term. If the given term is invalid or is not open for students at the moment, it ignores the given term and generates an html document for the current term.
-{quarter} is a length 7 string that indicates a specific quarter.
+{quarter} is a length 7 string that indicates a specific quarter. Example: 2017-03
 
-{courseCode} is a length 5 string that indicates a specific course code.
+{courseCode} is a length 5 string that indicates a specific course code. Example: 20025
 
 A {courseCode} is only distinct within a quarter; a {courseCode} may be used again in the next quarter for a different class.
 
 The app checks this URL for the status of each course: https://www.reg.uci.edu/perl/WebSoc?YearTerm={quarter}&ShowFinals=0&ShowComments=0&CourseCodes={courseCode}
+
+Example:https://www.reg.uci.edu/perl/WebSoc?YearTerm=2017-03&ShowFinals=0&ShowComments=0&CourseCodes=20025
 
 ##What It Actually Does
 This app sends notification email using SendGrid whenever a course changes its status from full to open or waitlist.
