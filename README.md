@@ -17,6 +17,8 @@ GET	|/term/{quarter}	|Gets the html document for the given term. If the given te
 
 A {courseCode} is only distinct within a quarter; a {courseCode} may be used again in the next quarter for a different class.
 
+The app checks this URL for the status of each course: https://www.reg.uci.edu/perl/WebSoc?YearTerm={quarter}&ShowFinals=0&ShowComments=0&CourseCodes={courseCode}
+
 ##What It Actually Does
 This app sends notification email using SendGrid whenever a course changes its status from full to open or waitlist.
 
