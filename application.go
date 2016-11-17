@@ -76,7 +76,7 @@ func New(config *viper.Viper) (*Application, error) {
 	if err != nil {
 		return nil, err
 	}
-	go My_uci_class_is_full(db)
+	
 
 	cookieStoreSecret := config.Get("cookie_secret").(string)
 
