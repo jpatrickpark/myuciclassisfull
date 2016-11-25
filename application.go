@@ -25,6 +25,7 @@ func SendCourseOpenEmail(courseCode, quarter, email string) {
 	content := "<p>Your course " + courseCode + " for " + handlers.Readable(quarter) + " quarter is available!</p><p>Go ahead and enroll in now on <a href='https://www.reg.uci.edu'>Webreg</a>!</p>"
 	newContent := mail.NewContent("text/html", content)
 	message := mail.NewV3MailInit(from, title, to, newContent)
+	message.AddCategories("CourseAlert")
 	request := sendgrid.GetRequest(os.Getenv("SENDGRID_API_KEY"), "/v3/mail/send", "https://api.sendgrid.com")
 	request.Method = "POST"
 	request.Body = mail.GetRequestBody(message)
@@ -76,7 +77,6 @@ func New(config *viper.Viper) (*Application, error) {
 	if err != nil {
 		return nil, err
 	}
-	
 
 	cookieStoreSecret := config.Get("cookie_secret").(string)
 

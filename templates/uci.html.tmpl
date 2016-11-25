@@ -1,9 +1,20 @@
 {{define "content"}}
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.8&appId=459050564298479";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
 <div class="container">
     <div class="page-header">
       <h1 class="site-name">My UCI Class is Full</h1>
-	  <p>This app lets you know when the classes you want to enroll in becomes available so you don't have to check.</p>
+	  <p>This app lets you know whenever the classes you want to enroll in have an open spot.
+	  You will receive an email to the address you used when you sign up.</p>
       <p>You can also check the availability of courses yourself on <a href="//www.reg.uci.edu/perl/WebSoc">WebSOC</a>.</p>
+      <div class="fb-like" data-href="https://apps.jpatrickpark.com/my-uci-class-is-full" data-layout="button_count" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+      <a class="github-button" href="https://github.com/jpatrickpark/myuciclassisfull" data-count-href="/jpatrickpark/myuciclassisfull/stargazers" data-count-api="/repos/jpatrickpark/myuciclassisfull#stargazers_count" data-count-aria-label="# stargazers on GitHub" aria-label="Star jpatrickpark/myuciclassisfull on GitHub">Star</a>
     </div>
     <h3 class="text-center"> {{ .CurrentQuarterReadable  }} </h3>
     <!--
@@ -63,6 +74,11 @@ Share this app on:
 <a href="https://facebook.com/sharer.php?u=https://apps.jpatrickpark.com/my-uci-class-is-full" rel="nofollow" target="_blank" title="Share on Facebook"><i class="fa fa-facebook-official fa-3x"></i></a>`
 <a href="https://twitter.com/intent/tweet?text=My UCI Class is Full&url=https://apps.jpatrickpark.com/my-uci-class-is-full" rel="nofollow" target="_blank" title="Share on Twitter"><i class="fa fa-twitter-square fa-3x"></i></a>  
 <a href="https://plus.google.com/share?url=https://apps.jpatrickpark.com/my-uci-class-is-full" rel="nofollow" target="_blank" title="Share on Google+"><i class="fa fa-google-plus-square fa-3x"></i></a>
+  </div>
+  <div class="container">
+    <br/>
+    <p>If you need any help or have any comments, please email support&#64;jpatrickpark.com or comment below!</p>
+    <div class="fb-comments" data-href="https://apps.jpatrickpark.com/my-uci-class-is-full" data-numposts="5"></div>
   </div>
 </footer>
 <script>
@@ -219,4 +235,5 @@ $( function() {
     addListenerToDeleteButtons();
 });
 </script>
+<script async defer src="//buttons.github.io/buttons.js"></script>
 {{end}}

@@ -153,7 +153,10 @@ type PutDeleteTermResponse struct {
 
 func CourseStatus(currentQuarter, courseCode string) int {
 	// Get current status of a course from web
-	resp, _ := http.Get(urlFirstHalf + currentQuarter + urlSecondHalf + courseCode)
+	resp, err := http.Get(urlFirstHalf + currentQuarter + urlSecondHalf + courseCode)
+	if err != nil {
+		return models.NONEXISTENT
+	}
 	byteResp, _ := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
 	stringResp := string(byteResp)
