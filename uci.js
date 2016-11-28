@@ -1,4 +1,6 @@
+// js code included in templates/uci.html.tmpl, in a separate file for readability
 $( function() {
+    AJAX_ERROR = -1;
     FULL = 0;
     OPEN = 1;
     WAITLIST = 2;
@@ -6,6 +8,8 @@ $( function() {
     DELETED = 4;
     ENTRYEXISTS = 5;
     NOTDELETED = 6;
+	NEWONLY_FULL     = 7;
+	NEWONLY_WAITLIST = 8;
 
 
     function createServerResponseElement(stat,code) {
@@ -13,6 +17,10 @@ $( function() {
         icon = "";
         message = "";
         switch (stat) {
+        case AJAX_ERROR:
+            icon = '<i class="fa fa-ban fa-5x" style="color: red;"></i>';
+            message = '<h4>There was an error! Please try again later.</h4><p>'+code+'</p>';
+            break;
         case FULL:
             icon = '<i class="fa fa-check fa-5x" style="color: green;"></i>';
             message = '<h4>Course '+code+' is full! You will get notified.</h4>';
@@ -26,20 +34,28 @@ $( function() {
             message = '<h4>Course '+code+' is currently open! </h4><h4> You can go ahead and enroll if your window is open.</h4><h4>You will still get notified in case you cannot enroll before it gets full.</h4>';
             break;
         case NONEXISTENT:
-            icon = '<i class="fa fa-ban fa-5x" style="color: red;"></i>'
-            message = '<h4>Course '+code+' does not exist!</h4>'
+            icon = '<i class="fa fa-ban fa-5x" style="color: red;"></i>';
+            message = '<h4>Course '+code+' does not exist!</h4>';
             break;
         case DELETED:
             icon = '<i class="fa fa-check fa-5x" style="color: green;"></i>';
-            message = '<h4>You will no longer receive notification for course '+code+'!</h4>'
+            message = '<h4>You will no longer receive notification for course '+code+'!</h4>';
             break;
         case ENTRYEXISTS:
-            icon = '<i class="fa fa-ban fa-5x" style="color: red;"></i>'
-            message = '<h4>'+code+' is already registered as your course!</h4>'
+            icon = '<i class="fa fa-ban fa-5x" style="color: red;"></i>';
+            message = '<h4>'+code+' is already registered as your course!</h4>';
             break;
         case NOTDELETED:
-            icon = '<i class="fa fa-ban fa-5x" style="color: red;"></i>'
-            message = '<h4>'+code+' is not one of your registered courses!</h4>'
+            icon = '<i class="fa fa-ban fa-5x" style="color: red;"></i>';
+            message = '<h4>'+code+' is not one of your registered courses!</h4>';
+            break;
+        case NEWONLY_FULL:
+            icon = '<i class="fa fa-exclamation-triangle fa-5x" style="color: blue;"></i>';
+            message = '<h4>Course '+code+' is open for new students only!</h4><h4> You can go ahead and enroll if you are a new student.</h4><h4>You get notified when it has an open spot for current students.</h4>';
+            break;
+        case NEWONLY_WAITLIST:
+            icon = '<i class="fa fa-exclamation-triangle fa-5x" style="color: blue;"></i>';
+            message = '<h4>Course '+code+' has an open waitlist for current students!</h4><h4> You can go ahead and enroll if your window is open.</h4><h4>You will still get notified in case you cannot enroll before it gets full.</h4>';
             break;
         default:
             break;
@@ -66,6 +82,12 @@ $( function() {
                     subelement = "<tr class='success'><td>";
                     subelement = subelement.concat(value.courseCode);
                     subelement = subelement.concat("</td><td>Open");
+                    break;
+                case NEWONLY_FULL:
+                case NEWONLY_WAITLIST:
+                    subelement = "<tr class='info'><td>";
+                    subelement = subelement.concat(value.courseCode);
+                    subelement = subelement.concat("</td><td>NewOnly");
                     break;
                 default:
                     subelement = "<tr class='danger'><td>";
@@ -113,11 +135,7 @@ $( function() {
               $courseCode.val('');
             },
             error: function (textStatus, errThrown) {
-                $.each(textStatus, function(key,value) {
-                  if (key=='responseText') {
-                    alert(value);
-                  }
-                });
+              $displayResponse.append(createServerResponseElement(-1, textStatus));
             }
         });
     });
@@ -147,5 +165,18 @@ $( function() {
         });
     });
     };
-    addListenerToDeleteButtons();
+    // GET USER COURSE LIST AS A TABLE
+    $.ajax({
+        url: $courseCodeForm.attr('action'),
+        type: 'PUT',
+        data: {courseCode: 'init'},
+        success: function (result) {
+            $('#tableBody').remove();
+            $table.append(createCourseListElement(result.courses));
+            addListenerToDeleteButtons();
+        },
+        error: function (textStatus, errThrown) {
+            $displayResponse.append(createServerResponseElement(-1, textStatus));
+        }
+    });
 });

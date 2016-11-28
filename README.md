@@ -22,7 +22,7 @@ The app checks this URL for the status of each course: https://www.reg.uci.edu/p
 Example:https://www.reg.uci.edu/perl/WebSoc?YearTerm=2017-03&ShowFinals=0&ShowComments=0&CourseCodes=20025
 
 ##What It Actually Does
-This app sends notification email using SendGrid whenever a course changes its status from full to open or waitlist.
+This app sends notification email using SendGrid whenever a course changes its status from (full or newonly) to (open or waitlist).
 
 It saves the status of the requested courses in the database and compares with the school website every minute.
 

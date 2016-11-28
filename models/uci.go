@@ -8,15 +8,17 @@ import (
 )
 
 const (
-	PairTableName   = "user_course_pair"
-	CourseTableName = "courses"
-	FULL            = 0
-	OPEN            = 1
-	WAITLIST        = 2
-	NONEXISTENT     = 3
-	DELETED         = 4
-	ENTRYEXISTS     = 5
-	NOTDELETED      = 6
+	PairTableName    = "user_course_pair"
+	CourseTableName  = "courses"
+	FULL             = 0
+	OPEN             = 1
+	WAITLIST         = 2
+	NONEXISTENT      = 3
+	DELETED          = 4
+	ENTRYEXISTS      = 5
+	NOTDELETED       = 6
+	NEWONLY_FULL     = 7
+	NEWONLY_WAITLIST = 8
 )
 
 func NewCourse(db *sqlx.DB) *Course {

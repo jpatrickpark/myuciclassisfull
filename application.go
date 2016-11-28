@@ -18,11 +18,37 @@ import (
 	"github.com/jpatrickpark/server1/models"
 )
 
-func SendCourseOpenEmail(courseCode, quarter, email string) {
+func ReadableStatus(newStatus int) string {
+	switch newStatus {
+	case models.FULL: //             = 0
+		return "is full"
+	case models.OPEN: //             = 1
+		return "is open"
+	case models.WAITLIST: //         = 2
+		return "has open waitlist"
+	case models.NONEXISTENT: //      = 3
+		return "does not exist"
+	case models.DELETED: //          = 4
+		return "is successfully deleted"
+	case models.ENTRYEXISTS: //      = 5
+		return "is already recorded"
+	case models.NOTDELETED: //       = 6
+		return "is not deleted"
+	case models.NEWONLY_FULL: //     = 7
+		return "is only available for new students"
+	case models.NEWONLY_WAITLIST: // = 8
+		return "has an open waitlist for current students"
+	default:
+		return "encountered an unknown error"
+	}
+}
+
+func SendCourseOpenEmail(courseCode, quarter, email string, newStatus int) {
+	stringStatus := ReadableStatus(newStatus)
 	from := mail.NewEmail("My UCI Class Is Full", "myuciclassisfull@gmail.com")
 	to := mail.NewEmail(email, email)
-	title := "Your course " + courseCode + " is available!"
-	content := "<p>Your course " + courseCode + " for " + handlers.Readable(quarter) + " quarter is available!</p><p>Go ahead and enroll in now on <a href='https://www.reg.uci.edu'>Webreg</a>!</p>"
+	title := "Your course " + courseCode + " " + stringStatus + "!"
+	content := "<p>Your course " + courseCode + " for " + handlers.ReadableQuarter(quarter) + " quarter " + stringStatus + "!</p><p>Go ahead and enroll in now on <a href='https://www.reg.uci.edu'>Webreg</a>!</p>"
 	newContent := mail.NewContent("text/html", content)
 	message := mail.NewV3MailInit(from, title, to, newContent)
 	message.AddCategories("CourseAlert")
@@ -32,7 +58,10 @@ func SendCourseOpenEmail(courseCode, quarter, email string) {
 	// I should think more about what to do when the email fails to send.
 	sendgrid.API(request)
 }
-func SendToAccordingUsers(db *sqlx.DB, courseId int64, courseCode, quarter string) {
+func SendToAccordingUsers(db *sqlx.DB, courseId int64, courseCode, quarter string, newStatus int) {
+	if newStatus != models.OPEN && newStatus != models.WAITLIST && newStatus != models.NEWONLY_WAITLIST {
+		return
+	}
 	pair := models.NewUserCoursePair(db)
 	userStruct := models.NewUser(db)
 	pairs, err1 := pair.GetPairsByCourseId(nil, courseId)
@@ -40,7 +69,7 @@ func SendToAccordingUsers(db *sqlx.DB, courseId int64, courseCode, quarter strin
 		for _, item := range *pairs {
 			user, err2 := userStruct.GetById(nil, item.UserID)
 			if err2 == nil {
-				SendCourseOpenEmail(courseCode, quarter, user.Email)
+				SendCourseOpenEmail(courseCode, quarter, user.Email, newStatus)
 			}
 		}
 	}
@@ -58,8 +87,8 @@ func My_uci_class_is_full(db *sqlx.DB) {
 					newStatus := handlers.CourseStatus(item.Quarter, item.CourseCode)
 					if item.Status != newStatus {
 						course.UpdateCourse(nil, item.ID, newStatus)
-						if item.Status == models.FULL && (newStatus == models.OPEN || newStatus == models.WAITLIST) {
-							go SendToAccordingUsers(db, item.ID, item.CourseCode, item.Quarter)
+						if (item.Status == models.FULL || item.Status == models.NEWONLY_FULL) && (newStatus == models.OPEN || newStatus == models.WAITLIST || newStatus == models.NEWONLY_WAITLIST) {
+							go SendToAccordingUsers(db, item.ID, item.CourseCode, item.Quarter, newStatus)
 						}
 					}
 				}

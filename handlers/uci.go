@@ -107,7 +107,7 @@ func Find(items []string, target string) int {
 	}
 	return -1
 }
-func Readable(quarter string) string {
+func ReadableQuarter(quarter string) string {
 	// Convert 7-digit string 'quarter' into human readable format
 	var readable string
 	switch quarter[4:7] {
@@ -166,10 +166,20 @@ func CourseStatus(currentQuarter, courseCode string) int {
 	if strings.Contains(stringResp, "OPEN") {
 		return models.OPEN
 	}
-	if strings.Contains(stringResp, "No courses matched") {
-		return models.NONEXISTENT
+	if strings.Contains(stringResp, "Waitl") {
+		return models.WAITLIST
 	}
-	return models.WAITLIST
+	if strings.Contains(stringResp, "NewOnly") {
+		return models.NEWONLY_FULL
+		// CURRENTLY THERE IS NO WAY TO DETERMINE IF THE WAITLIST IS FULL
+		/*
+			if strings.Contains(stringResp, "n/a") {
+				return models.NEWONLY_FULL
+			}
+			return models.NEWONLY_WAITLIST
+		*/
+	}
+	return models.NONEXISTENT
 }
 func DeleteTerm(w http.ResponseWriter, r *http.Request) {
 	// Remove user's request for a given course for a given term
@@ -294,12 +304,14 @@ func GetUciClass(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Get list of users requested courses
-	db := context.Get(r, "db").(*sqlx.DB)
-	courses, err := models.NewCourse(db).GetCoursesByUserIdAndQuarter(nil, currentUser.ID, currentQuarter)
-	if err != nil {
-		libhttp.HandleErrorJson(w, err)
-		return
-	}
+	/*
+		db := context.Get(r, "db").(*sqlx.DB)
+		courses, err := models.NewCourse(db).GetCoursesByUserIdAndQuarter(nil, currentUser.ID, currentQuarter)
+		if err != nil {
+			libhttp.HandleErrorJson(w, err)
+			return
+		}
+	*/
 
 	// This part of the code is to be able to handle cases
 	// where there are multiple quarters that are open to the students at a moment.
@@ -332,9 +344,8 @@ func GetUciClass(w http.ResponseWriter, r *http.Request) {
 		Next                   string
 		ExistsPrev             bool
 		ExistsNext             bool
-		Courses                *[]models.CourseRow
 	}{
-		currentUser, currentQuarter, Readable(currentQuarter), prev, next, prev != "", next != "", courses,
+		currentUser, currentQuarter, ReadableQuarter(currentQuarter), prev, next, prev != "", next != "",
 	}
 
 	tmpl, err := template.ParseFiles("templates/dashboard.html.tmpl", "templates/uci.html.tmpl")
