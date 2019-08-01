@@ -1,6 +1,6 @@
 # Documentations for My UCI Class is Full
 
-##REST
+## REST
 This app uses RESTful URL to receive requests and display ajax responses.
 
 However, users must submit request in the browser through the web app because user information is saved in session.
@@ -21,21 +21,21 @@ The app checks this URL for the status of each course: https://www.reg.uci.edu/p
 
 Example:https://www.reg.uci.edu/perl/WebSoc?YearTerm=2017-03&ShowFinals=0&ShowComments=0&CourseCodes=20025
 
-##What It Actually Does
+## What It Actually Does
 This app sends notification email using SendGrid whenever a course changes its status from (full or newonly) to (open or waitlist).
 
 It saves the status of the requested courses in the database and compares with the school website every minute.
 
-##Databases
-###Courses
+## Databases
+### Courses
 id | courseCode | status | quarter
 ---|---|---|---
 BIGSERIAL | TEXT | INT | TEXT
-###User_Course_Pairs
+### User_Course_Pairs
 id | course_id | user_id
 ---|---|---
 BIGSERIAL | BIGSERIAL | BIGSERIAL
-###Users
+### Users
 id | email
 ---|---
 BIGSERIAL | TEXT
